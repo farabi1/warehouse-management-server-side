@@ -16,7 +16,7 @@ const uri = "mongodb+srv://farabi:LosTUx88Jsnd2cF7@cluster1.59qdt.mongodb.net/my
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 client.connect(err => {
   const collection = client.db("test").collection("devices");
-  console.log('DB Connected');
+  console.log('DB Connected and Heroku Setup');
   // perform actions on the collection object
   client.close();
 });
