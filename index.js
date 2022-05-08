@@ -3,27 +3,46 @@ const app = express()
 const cors = require('cors')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000
+require('dotenv').config();
 
 
 
 app.use(cors());
 app.use(express.json());
-// farabi
-// LosTUx88Jsnd2cF7
 
 
-const uri = "mongodb+srv://farabi:LosTUx88Jsnd2cF7@cluster1.59qdt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster1.59qdt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  console.log('DB Connected and Heroku Setup');
-  // perform actions on the collection object
-  client.close();
-});
+
+async function run() {
+
+  try {
+    await client.connect();
+    const inventoryCollection = client.db('warehouse').collection('inventory');
+
+    app.get('/inventory', async (req, res) => {
+      const query = {};
+      const cursor = inventoryCollection.find(query);
+      const inventory = await cursor.toArray();
+      res.send(inventory);
+    });
+
+  }
+  finally {
+
+  }
+}
+
+run().catch(console.dir);
+
 
 app.get('/', (req, res) => {
   res.send('Hello Warehouse Server pro!')
 })
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
